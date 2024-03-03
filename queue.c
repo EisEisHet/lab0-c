@@ -133,11 +133,21 @@ bool q_delete_mid(struct list_head *head)
 {
     // https://leetcode.com/problems/delete-the-middle-node-of-a-linked-list/
 
-    if (!head || list_empty(head) || list_is_singular(head))
-        return false;  // if queue is empty, NULL or only has one element
+    if (!head || list_empty(head))
+        return false;  // if queue is empty or NULL
 
+    struct list_head *slow = head->next, *fast = head->next->next;
+    // check queue until the very last entry
+    // using Tortoise and Hare algo
+    while (fast != head && fast->next != head) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
 
-
+    element_t *middle_node = list_entry(slow, element_t, list);
+    list_del(slow);
+    free(middle_node->value);
+    free(middle_node);
     return true;
 }
 
